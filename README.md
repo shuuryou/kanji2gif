@@ -7,6 +7,9 @@ Please note that this pogram is considered feature-complete. While written in 20
 
 Note the conditions of the LICENSE file if you decide to fork.
 
+Usage
+-----
+
 There are two modes of operation; command-line and GUI. The command-line mode works as follows:
 
     Usage: Kanji2GIF.exe [Wordlist] [OutDir] </c> </s:N> </w:N>
@@ -20,3 +23,15 @@ There are two modes of operation; command-line and GUI. The command-line mode wo
 The GUI looks like this:
 
 ![Screenshot](http://i.imgur.com/rmnVrar.png)
+
+
+Output Samples
+--------------
+
+    kanji2gif wordlist.txt c:\out /c /s:0.5 /w:5
+
+![Strawberry](http://i.imgur.com/mZG1vcb.gif)
+
+![Transistor](http://i.imgur.com/BPoIpGa.gif)
+
+![Harmony](http://i.imgur.com/Yfb898A.gif)
