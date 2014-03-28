@@ -3,7 +3,9 @@ Kanji2GIF
 
 Generates GIF files with Japanese kanji stroke order animations. Written early 2011. In addition to kanji, it supports hiragana, katakana, number, and alphabet animations. It was intended to be used with something like [Anki](http://ankisrs.net/).
 
-Please note that this pogram is no longer maintained and considered feature-complete. A quick test indicates that it still works fine on modern versions of Windows. Please note the conditions of the LICENSE file if you decide to fork.
+Please note that this pogram is considered feature-complete. While written in 2011, it continues to work fine on modern versions of Windows.
+
+Note the conditions of the LICENSE file if you decide to fork.
 
 There are two modes of operation; command-line and GUI. The command-line mode works as follows:
 
