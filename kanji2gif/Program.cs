@@ -18,7 +18,7 @@ namespace Kanji2GIF
 {
     public static class Program
 	{
-		private const string KANJIVG_XPATH = "/kanjis/kanji[@midashi='{0}']//stroke";
+		private const string KANJIVG_XPATH = "/kanjivg/kanji[@id='kvg:kanji_{0:x5}']//path";
 		private const int WIDTH = 109, HEIGHT = 109;
 
 		private static string APP_DIR;
@@ -165,7 +165,7 @@ namespace Kanji2GIF
 				foreach (char c in text)
 				{
 					XmlNodeList nodes = m_kanjiVG.SelectNodes(string.Format(
-						CultureInfo.InvariantCulture, KANJIVG_XPATH, c));
+						CultureInfo.InvariantCulture, KANJIVG_XPATH, (int)c));
 
 					if (nodes.Count == 0)
 						throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
@@ -178,7 +178,7 @@ namespace Kanji2GIF
 
 					foreach (XmlNode node in nodes)
 					{
-						string pathData = node.Attributes["path"].Value;
+						string pathData = node.Attributes["d"].Value;
 						double pathLength = GetPathLength(pathData);
 						double animLength = pathLength / 75D; // Speed based on stroke length
 
