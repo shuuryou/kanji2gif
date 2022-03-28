@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ImageMagick;
+using SharpVectors.Dom.Svg;
+using SharpVectors.Renderers.Forms;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -10,12 +13,10 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
-using SharpVectors.Dom.Svg;
-using SharpVectors.Renderers.Forms;
 
 namespace Kanji2GIF
 {
-	public static class Program
+    public static class Program
 	{
 		private const string KANJIVG_XPATH = "/kanjis/kanji[@midashi='{0}']//stroke";
 		private const int WIDTH = 109, HEIGHT = 109;
@@ -201,6 +202,8 @@ namespace Kanji2GIF
 				sb.Append(SVG.Footer);
 				#endregion
 
+				int total_frames = 0;
+
 				#region Build Individual Frames
 				Console.Write("Building individual frames...");
 
@@ -229,49 +232,48 @@ namespace Kanji2GIF
 					}
 
 					Console.WriteLine(" {0:n0} frames created.", frame);
+					total_frames = frame;
 				}
 				#endregion
 
 				#region Create GIF
 				{
-					ProcessStartInfo pi = new ProcessStartInfo();
-					pi.WindowStyle = ProcessWindowStyle.Hidden;
-					pi.CreateNoWindow = false;
-					pi.FileName = string.Format(CultureInfo.InvariantCulture,
-						"{0}{1}convert.exe", APP_DIR, Path.DirectorySeparatorChar);
-
 					string animationGif = string.Format(CultureInfo.InvariantCulture,
 						"{0}{1}animation.gif", tempDir, Path.DirectorySeparatorChar);
 
-					Console.WriteLine("Creating initial GIF image...");
-					pi.Arguments = string.Format(CultureInfo.InvariantCulture,
-						@"""{0}{1}00000.SVG"" ""{2}""", tempDir, Path.DirectorySeparatorChar,
-						animationGif);
+					// This was rewritten in 2022 (11 years after I made this!) to use Magick.NET
+					// instead of launching convert.exe three times. Not that anyone cares...
 
-					Process.Start(pi).WaitForExit();
+					using (MagickImageCollection collection = new MagickImageCollection())
+					{
+						Console.WriteLine("Composing GIF animation from frames.");
 
-					Console.WriteLine("Merging frames into animation... (may take a long time)");
-					pi.Arguments = string.Format(CultureInfo.InvariantCulture,
-						@"-dispose previous -delay 10 -size {0}x109 -page +0+0 ""{1}{2}*.SVG"" ""{3}""",
-						text.Length * WIDTH, tempDir, Path.DirectorySeparatorChar, animationGif);
+						for (int i = 0; i < total_frames; ++i)
+						{
+							collection.Add(string.Format(CultureInfo.InvariantCulture, @"{0}{1}{2:00000}.SVG", tempDir, Path.DirectorySeparatorChar, i));
+							collection[i].AnimationDelay = ((i == total_frames - 1 ) ? (int)(finalDelay * 100) : 10);
+							collection[i].GifDisposeMethod = GifDisposeMethod.Previous;
+							collection[i].Page.X = collection[i].Page.Y = 0;
+							collection[i].Resize(text.Length * WIDTH, HEIGHT);
+						}
 
-					Process.Start(pi).WaitForExit();
+						Console.WriteLine("Quantizing GIF. Takes a long time.");
+						QuantizeSettings settings = new QuantizeSettings();
+						settings.Colors = 256;
+						collection.Quantize(settings);
 
-					Console.WriteLine("Delaying final frame...");
-					pi.Arguments = string.Format(CultureInfo.InvariantCulture,
-						@"""{0}"" ( +clone -set delay {1} ) +swap +delete ""{0}""", animationGif,
-						finalDelay * 100);
+						Console.WriteLine("Optimizing GIF. Takes a long time.");
+						collection.OptimizePlus();
 
-					Process.Start(pi).WaitForExit();
+						Console.WriteLine("Writing GIF file to disk.");
+						collection.Write(animationGif, MagickFormat.Gif);
+					}
 
-					Console.WriteLine("Optimizing animation...");
-					pi.Arguments = string.Format(CultureInfo.InvariantCulture,
-						@"""{0}"" -layers optimize -layers remove-dups ""{0}""", animationGif);
-
-					Process.Start(pi).WaitForExit();
-
+					Console.WriteLine("Moving GIF to destination.");
 					File.Copy(animationGif, outputFile, true);
 					File.Delete(animationGif);
+
+					Console.WriteLine("Complete!");
 				}
 				#endregion
 			}
@@ -316,12 +318,7 @@ namespace Kanji2GIF
 
 			Console.WriteLine("{0} Version {1}", AssemblyAttributes.AssemblyTitle,
 				AssemblyAttributes.AssemblyVersion);
-			Console.WriteLine("Written by {0}", AssemblyAttributes.AssemblyCompany);
 
-			Console.WriteLine("Uses ImageMagick by ImageMagick Studio LLC");
-			Console.WriteLine("Uses KanjiVG data created by Ulrich Apel");
-			Console.WriteLine("Uses SharpVectors by Paul Selormey");
-			Console.WriteLine("Uses SMIL XSLT created by Holger Will");
 			Console.WriteLine();
 		}
 
