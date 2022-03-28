@@ -320,6 +320,11 @@ namespace Kanji2GIF
 				AssemblyAttributes.AssemblyVersion);
 
 			Console.WriteLine();
+			Console.WriteLine("Attribution statements:");
+			Console.WriteLine("KanjiVG copyright (c) Ulrich Apel. Licensed under the Creative Commons Attribution-Share Alike 3.0 license.");
+			Console.WriteLine("SharpVectors library copyright (c) Elinam LLC. All rights reserved. Licensed under BSD 3-Clause License.");
+			Console.WriteLine("Magick.NET library copyright (c) Dirk Lemstra. Licensed under the Apache License, Version 2.0.");
+			Console.WriteLine();
 		}
 
 		private static void PrintUsage()
