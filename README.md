@@ -1,11 +1,13 @@
 Kanji2GIF
 =========
 
-Generates GIF files with Japanese kanji stroke order animations. Written early 2011. In addition to kanji, it supports hiragana, katakana, number, and alphabet animations. It was intended to be used with something like [Anki](http://ankisrs.net/).
+Generates GIF files with Japanese kanji stroke order animations. In addition to kanji, it supports hiragana, katakana, number, and alphabet animations. It was intended to be used with something like [Anki](http://ankisrs.net/).
 
-Please note that this pogram is considered feature-complete. While written in 2011, it continues to work fine on modern versions of Windows.
+Make some flash cards showing a kanji word as the "question" and the GIF animation as the "answer". When you then work through the flash cards, write out the kanji word shown and then check whether you used the correct stroke order afterwards.
 
-Note the conditions of the LICENSE file if you decide to fork.
+This was written in early 2011 but there was a one-off update in 2022 from 1.0.0.5 to 1.1.0.0 to replace the ancient `convert.exe` from the ImageMagick project with direct calls to the [Magick.NET](https://github.com/dlemstra/Magick.NET/) library and to update the ancient build of the [SharpVectors](https://github.com/ElinamLLC/SharpVectors/) library from the long-gone CodePlex with a more recent version from GitHub. These are both now pulled in via NuGet packages, so you'll need a fairly recent version of Visual Studio to build the project. Ancient Visual Studio 2010 will no longer build this.
+
+There's a ready to use release for Windows you can download and play with. It should run just fine on any version of Windows (x86 or x64) that supports the .NET Framework 4.0.
 
 Usage
 -----
@@ -35,3 +37,4 @@ Output Samples
 ![Transistor](http://i.imgur.com/BPoIpGa.gif)
 
 ![Harmony](http://i.imgur.com/Yfb898A.gif)
+
