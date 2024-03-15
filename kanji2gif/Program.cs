@@ -19,7 +19,6 @@ namespace Kanji2GIF
     public static class Program
 	{
 		private const string KANJIVG_XPATH = "/kanjivg/kanji[@id='kvg:kanji_{0:x5}']//path";
-		private const int WIDTH = 109, HEIGHT = 109;
 
 		private static string APP_DIR;
 
@@ -57,6 +56,7 @@ namespace Kanji2GIF
 			string wordListFile, outputDir;
 			bool useColors;
 			double strokeDelay, finalDelay;
+			int imageWidth, imageHeight;
 
 			#region Load GUI if no arguments given
 			if (args.Length == 0)
@@ -100,7 +100,7 @@ namespace Kanji2GIF
 			#endregion
 
 			ParseArguments(ref args, out wordListFile, out outputDir, out useColors,
-				out strokeDelay, out finalDelay);
+				out strokeDelay, out finalDelay, out imageWidth, out imageHeight);
 
 			using (StreamReader sr = File.OpenText(wordListFile))
 				while (!sr.EndOfStream)
@@ -116,7 +116,7 @@ namespace Kanji2GIF
 
 					Console.WriteLine("Processing \"{0}\":", word);
 
-					Convert(word, outFile, useColors, strokeDelay, finalDelay);
+					Convert(word, outFile, useColors, strokeDelay, finalDelay, imageWidth, imageHeight);
 
 					Console.WriteLine();
 				}
@@ -143,7 +143,7 @@ namespace Kanji2GIF
 		}
 
 		private static void Convert(string text, string outputFile, bool colorful,
-			double strokeDelay, double finalDelay)
+			double strokeDelay, double finalDelay, int imageWidth, int imageHeight)
 		{
 			string tempDir = Path.GetTempPath() + Path.DirectorySeparatorChar +
 				Path.GetRandomFileName();
@@ -157,7 +157,7 @@ namespace Kanji2GIF
 
 				StringBuilder sb = new StringBuilder();
 
-				sb.AppendFormat(SVG.Header, WIDTH * text.Length);
+				sb.AppendFormat(SVG.Header, imageWidth * text.Length, imageHeight);
 
 				int charIndex = 0;
 				double animTimeline = 0;
@@ -172,14 +172,14 @@ namespace Kanji2GIF
 							"No stroke information found for \"{0}\".", c), "text");
 
 					sb.AppendFormat(CultureInfo.InvariantCulture, SVG.TransformHeader,
-						WIDTH * charIndex);
+                        imageWidth * charIndex, imageWidth / 109, imageHeight / 109);
 
-					sb.Append(SVG.Lines);
+					sb.AppendFormat(SVG.Lines, imageWidth, imageHeight, imageWidth / 2, imageHeight / 2);
 
 					foreach (XmlNode node in nodes)
 					{
 						string pathData = node.Attributes["d"].Value;
-						double pathLength = GetPathLength(pathData);
+						double pathLength = GetPathLength(pathData, imageWidth, imageHeight);
 						double animLength = pathLength / 75D; // Speed based on stroke length
 
 						string color;
@@ -254,7 +254,7 @@ namespace Kanji2GIF
 							collection[i].AnimationDelay = ((i == total_frames - 1 ) ? (int)(finalDelay * 100) : 10);
 							collection[i].GifDisposeMethod = GifDisposeMethod.Previous;
 							collection[i].Page.X = collection[i].Page.Y = 0;
-							collection[i].Resize(text.Length * WIDTH, HEIGHT);
+							collection[i].Resize(text.Length * imageWidth, imageHeight);
 						}
 
 						Console.WriteLine("Quantizing GIF. Takes a long time.");
@@ -295,14 +295,14 @@ namespace Kanji2GIF
 			return ret;
 		}
 
-		private static double GetPathLength(string p)
+		private static double GetPathLength(string p, int imageWidth, int imageHeight)
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append(SVG.Header);
 			sb.AppendFormat(CultureInfo.InvariantCulture, SVG.StrokeBasic, p);
 			sb.AppendFormat(CultureInfo.InvariantCulture, SVG.Footer);
 
-			SvgPictureBoxWindow w = new SvgPictureBoxWindow(WIDTH, HEIGHT, null);
+			SvgPictureBoxWindow w = new SvgPictureBoxWindow(imageWidth, imageWidth, null);
 			SharpVectors.Dom.Svg.SvgDocument d = new SharpVectors.Dom.Svg.SvgDocument(w);
 			d.LoadXml(sb.ToString());
 
@@ -338,16 +338,20 @@ namespace Kanji2GIF
 			Console.WriteLine("/c       - Makes every drawn stroke use a different color.");
 			Console.WriteLine("/s:N     - Wait this many seconds between strokes (default: 0.5).");
 			Console.WriteLine("/w:N     - Wait this many seconds before looping animation (default: 5).");
+			Console.WriteLine("/imgw:N  - Width of each character in pixels (default: 109).");
+			Console.WriteLine("/imgh:N  - Height of each character in pixels (default: 109).");
 
 			Console.WriteLine();
 		}
 
 		private static void ParseArguments(ref string[] args, out string wordListFile, out string outputDir,
-			out bool useColors, out double strokeDelay, out double finalDelay)
+			out bool useColors, out double strokeDelay, out double finalDelay, out int imageWidth, out int imageHeight)
 		{
 			useColors = false;
 			strokeDelay = 0.5D;
 			finalDelay = 5D;
+			imageWidth = 109;
+			imageHeight = 109;
 
 			if (args.Length < 2)
 			{
@@ -375,11 +379,23 @@ namespace Kanji2GIF
 					strokeDelay = double.Parse(arg.Substring(3), CultureInfo.CurrentCulture);
 				else if (arg.StartsWith("/W:"))
 					finalDelay = double.Parse(arg.Substring(3), CultureInfo.CurrentCulture);
+				else if (arg.StartsWith("/IMGW:"))
+					imageWidth = int.Parse(arg.Substring(6), NumberStyles.None, CultureInfo.InvariantCulture);
+				else if (arg.StartsWith("/IMGH:"))
+					imageHeight = int.Parse(arg.Substring(6), NumberStyles.None, CultureInfo.InvariantCulture);
 				else
 				{
 					PrintUsage();
 					ShowError("Unknown argument \"{0}\"", arg);
 				}
+			}
+
+			if (imageWidth != imageHeight)
+			{
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.Error.WriteLine("WARNING You've specified image dimensions that aren't square.");
+				Console.Error.WriteLine("I won't stop you, but the output will probably be weird.");
+				Console.ResetColor();
 			}
 		}
 
