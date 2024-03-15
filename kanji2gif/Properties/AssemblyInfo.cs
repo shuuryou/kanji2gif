@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2011 - 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("a072de5c-9086-4d6f-b501-5617a15db179")]
-[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.1.0.1")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
 [assembly: CLSCompliant(true)]
 
