@@ -19,7 +19,7 @@ namespace Kanji2GIF {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SVG {
@@ -79,7 +79,7 @@ namespace Kanji2GIF {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;line x1=&quot;1&quot; y1=&quot;{2}&quot; x2=&quot;{0}&quot; y2=&quot;{2}&quot; stroke=&quot;#dddddd&quot; stroke-width=&quot;1&quot; /&gt;&lt;line x1=&quot;{3}&quot; y1=&quot;1&quot; x2=&quot;{3}&quot; y2=&quot;{1}&quot; stroke=&quot;#dddddd&quot; stroke-width=&quot;1&quot; /&gt;.
+        ///   Looks up a localized string similar to &lt;line x1=&quot;1&quot; y1=&quot;54.5&quot; x2=&quot;109&quot; y2=&quot;54.5&quot; stroke=&quot;#dddddd&quot; stroke-width=&quot;1&quot; /&gt;&lt;line x1=&quot;54.5&quot; y1=&quot;1&quot; x2=&quot;54.5&quot; y2=&quot;109&quot; stroke=&quot;#dddddd&quot; stroke-width=&quot;1&quot; /&gt;.
         /// </summary>
         internal static string Lines {
             get {

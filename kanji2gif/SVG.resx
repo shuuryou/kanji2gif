@@ -124,9 +124,8 @@
     <value>&lt;svg width="{0}" height="{1}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1200/xlink" xml:space="preserve" version="1.1" baseProfile="full"&gt;</value>
     <comment>0 = Total width (109 * numChars), 1 Height</comment>
   </data>
-  <data name="Lines" xml:space="preserve">
-    <value>&lt;line x1="1" y1="{2}" x2="{0}" y2="{2}" stroke="#dddddd" stroke-width="1" /&gt;&lt;line x1="{3}" y1="1" x2="{3}" y2="{1}" stroke="#dddddd" stroke-width="1" /&gt;</value>
-    <comment>0, Width, 1 Height</comment>
+	<data name="Lines" xml:space="preserve">
+    <value>&lt;line x1="1" y1="54.5" x2="109" y2="54.5" stroke="#dddddd" stroke-width="1" /&gt;&lt;line x1="54.5" y1="1" x2="54.5" y2="109" stroke="#dddddd" stroke-width="1" /&gt;</value>
   </data>
   <data name="Stroke" xml:space="preserve">
     <value>&lt;path stroke-width="2" fill="none" stroke="{0}" stroke-dasharray="{1},{1}" stroke-dashoffset="{1}" d="{2}"&gt;&lt;animate begin="{3}s" attributeName="stroke-dashoffset" from="{1}" to="0" dur="{4}s" fill="freeze" /&gt;&lt;/path&gt;</value>
@@ -141,6 +140,6 @@
   </data>
   <data name="TransformHeader" xml:space="preserve">
     <value>&lt;g transform="translate({0}, 0) scale({1},{2})"&gt;</value>
-    <comment>0 = New X offset (109 * charPos)</comment>
+    <comment>0 = New X offset (109 * charPos), {1} Scale X, {2} Scale Y</comment>
   </data>
 </root>

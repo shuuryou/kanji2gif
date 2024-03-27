@@ -94,7 +94,13 @@ namespace Kanji2GIF
 					newArgs.Add(string.Format(CultureInfo.CurrentCulture, "/w:{0}",
 						mainForm.loopDelayUpDown.Value));
 
-					args = newArgs.ToArray();
+                    newArgs.Add(string.Format(CultureInfo.InvariantCulture, "/imgw:{0}",
+                        mainForm.widthHeightUpDown.Value));
+
+                    newArgs.Add(string.Format(CultureInfo.InvariantCulture, "/imgh:{0}",
+                        mainForm.widthHeightUpDown.Value));
+
+                    args = newArgs.ToArray();
 				}
 			}
 			#endregion
@@ -171,10 +177,14 @@ namespace Kanji2GIF
 						throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
 							"No stroke information found for \"{0}\".", c), "text");
 
-					sb.AppendFormat(CultureInfo.InvariantCulture, SVG.TransformHeader,
-                        imageWidth * charIndex, imageWidth / 109, imageHeight / 109);
+					{
+						double scalex = imageWidth / 109D;
+                        double scaley = imageHeight / 109D;
+						sb.AppendFormat(CultureInfo.InvariantCulture, SVG.TransformHeader,
+							imageWidth * charIndex, scalex , scaley);
+					}
 
-					sb.AppendFormat(SVG.Lines, imageWidth, imageHeight, imageWidth / 2, imageHeight / 2);
+                    sb.AppendFormat(SVG.Lines);
 
 					foreach (XmlNode node in nodes)
 					{
@@ -194,7 +204,7 @@ namespace Kanji2GIF
 
 						animTimeline += animLength + strokeDelay;
 					}
-
+					
 					sb.Append(SVG.TransformFooter);
 					charIndex++;
 				}
